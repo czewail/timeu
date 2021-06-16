@@ -49,7 +49,10 @@ export interface TimeUOption {
     minute?: string,
     second?: string,
     millisecond?: string,
-  }
+  },
+  prefix?: string,
+  suffix?: string,
+  midffix?: string,
 }
 
 export default function timeu(input: number, option: TimeUOption = {}) {
@@ -57,9 +60,9 @@ export default function timeu(input: number, option: TimeUOption = {}) {
   orderUnits.reduce((previousValue, currentValue) => {
     const less = previousValue
     if (less >= currentValue.value) {
-      const integer = Math.floor(less / currentValue.value)
+      const integer = (less / currentValue.value) | 0
       const residue = less % currentValue.value
-      res += `${integer}${(option.local as any)?.[currentValue.key] ?? currentValue.unit}`
+      res += `${option.prefix??''}${integer}${option.midffix??''}${(option.local as any)?.[currentValue.key] ?? currentValue.unit}${option.suffix??''}`
       return residue
     }
     return less
